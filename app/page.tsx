@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <div>
       <Button size="icon" variant='ok'>Click Me</Button>
-      <TextArea variant='light' placeholder='Type here' />
+      <TextArea variant='dark' placeholder='Type here' />
     </div>
   );
 }

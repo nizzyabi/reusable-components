@@ -3,16 +3,19 @@ import { Slot } from '@radix-ui/react-slot'
 import React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 
+// Define the props for the Button component, extending the standard button attributes
+// and adding custom variants for styling
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean // Option to render the button as a different component (like a link)
 }
 
-// 
+// Define button variants using class-variance-authority (cva) for consistent styling
 const buttonVariants = cva(
   `inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors 
    focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring 
-   disabled:pointer-events-none disabled:opacity-50`,
+   disabled:pointer-events-none disabled:opacity-50`, // Base styles for all buttons
   {
+    // Variant options for different styles
     variants: {
       variant: {
         dark: 'bg-slate-900 text-white',
@@ -35,23 +38,29 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: {
-      variant: 'primary',
-      size: 'default',
+      variant: 'primary', // Default variant
+      size: 'default', // Default size
     },
   },
 )
-// We are using forwardRef since it allows us to interact directly with the DOM & give us access to elements from the parent component
-// HTMLButtonElement: Here, we specify the type of the expected DOM element, in this case, an HTML button.
-// ButtonProps: This is an interface that defines the properties (props) that can be passed to the component.
 
+// Create the Button component with forwarding ref to allow direct DOM access
+// This helps the child to read and modify the element from any location where it is used.
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  // ({ className, variant, size, asChild = false, ...props }, ref): This destructures the props we passed to the Button component, allowing us to use them directly within our function. We also get the ref parameter to attach it to our underlying DOM element."
   ({ className, variant, size, asChild = false, ...props }, ref) => {
-    // Declaring Comp, we declare a constant called Comp to choose whether Comp is set to Slot or button depend on the value of asChild if you want to learn more about that prop, check this out https://www.radix-ui.com/primitives/docs/guides/composition
+    // Conditionally render the component as a Slot or button based on the asChild prop
+    // Allow us to include links, other components within the button
     const Comp = asChild ? Slot : 'button'
 
-    return <Comp ref={ref} className={cn(buttonVariants({ variant, size, className }))} {...props} />
+    return (
+      // Render the button with appropriate styles and forwarded ref
+      <Comp ref={ref} className={cn(buttonVariants({ variant, size, className }))} {...props} />
+    )
   },
 )
 
+// Set the display name for debugging purposes
 Button.displayName = 'Button'
+
 export { Button, buttonVariants }
